@@ -15,11 +15,32 @@ class EventController extends Controller
     public function index()
     {
         // return EventResource::collection(Event::all());
-
+        $this->shouldIncludeRelation('user');
         // This will be loading all the events together in the database with the user relationship
         return EventResource::collection(
             Event::with('user', 'attendees')->paginate() // and we use paginate to paginate the lists of the events
     );
+    }
+
+    // It should tell us if the specific relation should be included or not.
+    // this relation that was passeed as an argument should not be included in return false !$include
+    protected function shouldIncludeRelation(string $relation) : bool
+    {
+        // We will get the request query 
+        // In laravel you can get the current request using the request function
+        $include = request()->query('include');
+
+        // If the parameter is null or well emplty we can check if its true or false.
+        // So it will return false if include would be null
+        if(!$include){
+            return false;
+        }
+        
+        // We'll use the built in PHP explode function that lets you convert a string to an array using a specific separator
+        // IN THIS CASE we will use the comma as the separator ','
+        $relations = explode(',', $include);
+
+        dd($relations);
     }
 
     /**

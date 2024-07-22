@@ -17,7 +17,7 @@ class EventController extends Controller
         $query = Event::query(); // Construct query in the first line by using the event query method. This will start a QUERY BUILDER for this event MODEL.
         // It needs to be explicit about what relations can be loaded with the events.
         // It allows to load the ['user', 'attendees', 'attendees.user']
-        $relations = ['user', 'attendees'];
+        $relations = ['user', 'attendees', 'attendees.user'];
 
         // Supplementing this query with something optionally. we used foreach loop to over all the relations that we have inside our array.
         // 

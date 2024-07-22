@@ -17,7 +17,9 @@ class EventController extends Controller
         // return EventResource::collection(Event::all());
 
         // This will be loading all the events together in the database with the user relationship
-        return EventResource::collection(Event::with('user', 'attendees')->get());
+        return EventResource::collection(
+            Event::with('user', 'attendees')->paginate() // and we use paginate to paginate the lists of the events
+    );
     }
 
     /**

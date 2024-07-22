@@ -10,6 +10,7 @@ class Attendee extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['user_id'];
     // There is always a user associated with the attendee
     // Essentially, this means that one user can attend many events and the other relation is the event() itself.
     public function user() : BelongsTo

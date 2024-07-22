@@ -25,7 +25,7 @@ class EventResource extends JsonResource
             'user'=> new UserResource($this->whenLoaded('user')),
             // You can use this whenLoaded() to load one single relation or even a collection of resources. Events has user() and attendees()
             // We use Collection() method because we actually list the attendees and then we can do as well this when loaded attendees. 
-            // The attendees here is a static method so no new instance is created.
+            // The attendees here is a static method so no new instance is created. 
             'attendees'=> AttendeesResource::collection($this->whenLoaded('attendees'))
         ];
         

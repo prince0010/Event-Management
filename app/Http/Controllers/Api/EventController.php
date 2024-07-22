@@ -14,11 +14,24 @@ class EventController extends Controller
      */
     public function index()
     {
+        $query = Event::query(); // Construct query in the first line by using the event query method. This will start a QUERY BUILDER for this event MODEL.
+        // It needs to be explicit about what relations can be loaded with the events.
+        // It allows to load the ['user', 'attendees', 'attendees.user']
+        $relations = ['user', 'attendees', 'attendees.user'];
+
+        // Supplementing this query with something optionally. we used foreach loop to over all the relations that we have inside our array.
+        // 
+        foreach($relations as $relation){
+            $query->when(  //Every query builder instance has this when method. When the first argument passed to this, when method is true, it will run the second function which can alter the query. 
+                $this->shouldIncludeRelation($relation), // If this true the call the arrow function fn()
+                fn($q) => $q->with($relation) // If this true the call the arrow function fn()
+            );
+        }
+
         // return EventResource::collection(Event::all());
-        $this->shouldIncludeRelation('user');
         // This will be loading all the events together in the database with the user relationship
         return EventResource::collection(
-            Event::with('user', 'attendees')->paginate() // and we use paginate to paginate the lists of the events
+          $query->latest()->paginate() // and we use paginate to paginate the lists of the events
     );
     }
 
@@ -38,9 +51,12 @@ class EventController extends Controller
         
         // We'll use the built in PHP explode function that lets you convert a string to an array using a specific separator
         // IN THIS CASE we will use the comma as the separator ','
-        $relations = explode(',', $include);
+        // the array_map will make a run through every results in the url in ?include in url that explode would generate through a trim function.
+        //  
+        $relations = array_map('trim', explode(',', $include)); // trim is a built in php function that will remove all the starting leading spaces and all the ending spaces from any string.
 
-        dd($relations);
+        // dd($relations);
+        return in_array($relation, $relations); // So it checks if a specific relation that's passed to this method is inside relations array.
     }
 
     /**

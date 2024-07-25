@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AttendeeController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EventController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,11 +16,14 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+// The user can be fetched by getting the request object and this user function -> $request->user() will return either the user model if the user was logged in or it will just return null. The ACTUAL protection is using the middleware.
+// So every resource, every route that needs to be protectedm which means that requires user to be authenticated, to be accessed by that user, should just have this MIDDLEWARE added,auth colon or sanctum and more. 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+Route::post('/login', [AuthController::class, 'login']);
 // 
 Route::apiResource('events', EventController::class);
 // The attendees does not exist on their own, they always need to be associated with an event

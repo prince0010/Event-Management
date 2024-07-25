@@ -13,6 +13,8 @@ class EventController extends Controller
    use CanLoadRelationships;
 
 //    Reuse those relations definition on every action so I Dont have to set this array in every single action, you can also add it as a field.
+    // It should tell us if the specific relation should be included or not.
+    // this relation that was passeed as an argument should not be included in return false !$include
     private array $relations = ['user', 'attendees', 'attendees.user'];
 
     public function index()
@@ -29,13 +31,8 @@ class EventController extends Controller
     );
     }
 
-    // It should tell us if the specific relation should be included or not.
-    // this relation that was passeed as an argument should not be included in return false !$include
-    
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(Request $request)
     {
         $event = Event::create([

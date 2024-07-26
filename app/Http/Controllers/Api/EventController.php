@@ -12,6 +12,16 @@ class EventController extends Controller
 {
    use CanLoadRelationships;
 
+//    We will add a middleware in this Controller since we don't want to protect every single route inside the controller, so the best way to selectively apply middleware would be to do that inside the controller constructor.
+    public function __construct(){
+        // Which actions we will protecting
+        // > Store should be protected 
+        // > Update should be protected
+        // You need to be authethicated to add, modify and delete the events.
+        // Middleware
+        $this->middleware('auth:sanctum')->except(['index', 'show']);
+    }
+
 //    Reuse those relations definition on every action so I Dont have to set this array in every single action, you can also add it as a field.
     // It should tell us if the specific relation should be included or not.
     // this relation that was passeed as an argument should not be included in return false !$include
@@ -42,7 +52,7 @@ class EventController extends Controller
                 'start_time' => 'required|date',
                 'end_time' => 'required|date|after:start_time'
             ]),
-            'user_id' => 1
+            'user_id' => $request->user()->id // Guaranteed that the request user method will return the user model. This is why because we require the user to be authenticated first before this method store() even runs. So if the user would not be logged in, no code from this method store() would be running.
         ]);
 
         return new EventResource($this->loadRelationships($event)); // This is actually a loaded model becase we just created 

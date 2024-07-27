@@ -21,6 +21,8 @@ class EventController extends Controller
         // You need to be authethicated to add, modify and delete the events.
         // Middleware
         $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->authorizeResource(Event::class, 'event'); // Specifying the resource class which is the Event::class and next is the 2nd parameter of name of the routes, which is event in this case. You can check the routes in php artisan route:list {event}
+        //  This make sure that every method from the policy which is the EventPolicy.php -> (viewAny, view, create, update, delete, restore, forceDelete) will be called before a specific action.
     }
 
 //    Reuse those relations definition on every action so I Dont have to set this array in every single action, you can also add it as a field.
@@ -88,8 +90,8 @@ class EventController extends Controller
         // };
 
         // Simplified version of Gate ABOVE, BOTH ALLOWS OR DENIES
-        $this->authorize('update-auth', $event);
-        
+        // $this->authorize('update-auth', $event); // We dont need to specifically called the authorized now because of the EventPolicy.php Update and Laravel will does that for us, which makes the controllers even simpler.
+            // THE MORE YOU STICK TO LARAVEL CONVENTIUONS THE MORE CAN BE DONE FOR YOU BEHIND THE SCENES. I mena that you just need to call the authorizeResource method -> $this->authorizeResource(Event::class, 'event'); and then every action in the resource controller is automatically authorized for you.  
       $event->update(
         $request->validate([
             'name'=> 'sometimes|string|max:255',

@@ -12,9 +12,10 @@ use Illuminate\Http\Request;
 class AttendeeController extends Controller
 {
     use CanLoadRelationships;
-    
+
     public function __construct(){
         $this->middleware('auth:sanctum')->except(['index', 'show', 'update']);
+        $this->authorizeResource(Attendee::class, 'attendee'); // Attendee is the model class and the attendee is the route and you can check the routes in the models to be added in this parameter in php artisan route:list 
     }
 
     private array $relations = ['user', 'event']; // We have a field here defined just the user. THATS THE ONLY RELATIONSHIPS IN THE ATTENDEE.
@@ -59,7 +60,7 @@ class AttendeeController extends Controller
 
     public function destroy(Event $event, Attendee $attendee)
     {
-        $this->authorize('delete-auth', [$event, $attendee]);
+        // $this->authorize('delete-auth', [$event, $attendee]);
         $attendee->delete();
 
         return response(status: 204);

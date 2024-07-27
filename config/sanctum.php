@@ -45,8 +45,9 @@ return [
     | not expire. This won't tweak the lifetime of first-party sessions.
     |
     */
-
-    'expiration' => null,
+    
+    // 60 minutes times 24 = 1 day before the token is expired
+    'expiration' => 60 * 24,
 
     /*
     |--------------------------------------------------------------------------

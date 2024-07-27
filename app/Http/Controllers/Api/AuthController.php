@@ -56,8 +56,13 @@ class AuthController extends Controller
         // The token can be now used to authorize requests that require the user to be authenticated. And now how can we protect routes. How can we enforce that any given route that we want the user has to be authenticated to access that route. 
     }
 
+    // Revoke all the tokens
     public function logout(Request $request)
     {
+        $request->user()->tokens()->delete();
 
+        return response()->json([
+            'message' => 'Successfully logged out'
+        ]);
     }
 }

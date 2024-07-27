@@ -12,9 +12,15 @@ use Illuminate\Http\Request;
 class AttendeeController extends Controller
 {
     use CanLoadRelationships;
+    
+    public function __construct(){
+        $this->middleware('auth:sanctum')->except(['index', 'show', 'update']);
+    }
 
     private array $relations = ['user', 'event']; // We have a field here defined just the user. THATS THE ONLY RELATIONSHIPS IN THE ATTENDEE.
     // private array $relations = ['user']; // EITHER YOU CAN ADD THE EVENT OR NOT FOR THE INCLUDE IN THE URL ENDPOINT LINK
+
+  
 
     // List all the attendees of an specific event
     public function index(Event $event)
@@ -51,15 +57,9 @@ class AttendeeController extends Controller
         ); // we are wrapping the model that's fetched using the route model binding with the loadRelationships() method.
     }
 
-   
-    public function update(Request $request, string $id)
+    public function destroy(Event $event, Attendee $attendee)
     {
-        //
-    }
-
-    public function destroy(string $event, Attendee $attendee)
-    {
-
+        $this->authorize('delete-auth', [$event, $attendee]);
         $attendee->delete();
 
         return response(status: 204);

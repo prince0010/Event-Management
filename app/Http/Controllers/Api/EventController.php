@@ -7,13 +7,14 @@ use App\Http\Resources\EventResource;
 use App\Http\Traits\CanLoadRelationships;
 use App\Models\Event;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class EventController extends Controller
 {
    use CanLoadRelationships;
 
 //    We will add a middleware in this Controller since we don't want to protect every single route inside the controller, so the best way to selectively apply middleware would be to do that inside the controller constructor.
-    public function __construct(){
+    public function __construct(){ //MIDDLEWARE
         // Which actions we will protecting
         // > Store should be protected 
         // > Update should be protected
@@ -76,6 +77,19 @@ class EventController extends Controller
      */
     public function update(Request $request, Event $event)
     {
+        // Check if the current user can perform this update operation.
+        // if(Gate::denies('update-auth', $event)){ // If this is denied for this resource for the event, we would have to stop this request and the simplest way is just call abort() using the 403 code.
+        //         abort(403, 'You are not authorized to update this event.');
+        // };
+
+        // YOU CAN USE EITHER DENIES OR ALLOWS
+        // if(!Gate::allows('update-auth', $event)){ // If this is denied for this resource for the event, we would have to stop this request and the simplest way is just call abort() using the 403 code.
+        //         abort(403, 'You are not authorized to update this event.');
+        // };
+
+        // Simplified version of Gate ABOVE, BOTH ALLOWS OR DENIES
+        $this->authorize('update-auth', $event);
+        
       $event->update(
         $request->validate([
             'name'=> 'sometimes|string|max:255',

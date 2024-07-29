@@ -24,7 +24,7 @@ class AuthController extends Controller
             'password' => 'required'
             ]
         );
-        // Once validated the data, find the user that someone requests to sign in as.
+        // Once validated the data, find the user that someone requests to sign in as. Pangitaon niya ang user na nag sign in
         $user = User::where('email', $request->email)->first(); // use the user model to try and find the user by email so we can use the where() clause where the 'email' is exactly as the $request->email, so that would be a field on the request body and fetch the first() element that can be found using this email.
         
         // Checks if the user exists

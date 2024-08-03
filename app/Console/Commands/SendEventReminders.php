@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Notifications\EventReminderNotification;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
@@ -45,8 +46,14 @@ class SendEventReminders extends Command
       
         $events->each(// We iterate all over the events, using each method, which will run --
             fn($event)=> $event->attendees->each( //-- this function fn() for every single event. -> once we get to every single $event , every single $event has got attendees and attendees '$event->attendees' is also a collection. -> so it also has each method which --
-            fn($attendee) => $this->info("Notifying the user {$attendee->user->id}"))); // -- lets us run this function for every single attendee of every single event. Finally we run this info which will output this message for every attendee of every event. 
-       
+            // fn($attendee) => $this->info("Notifying the user {$attendee->user->id}"))); // -- lets us run this function for every single attendee of every single event. Finally we run this info which will output this message for every attendee of every event. 
+                fn($attendee) => $attendee->user->notify(
+                    new EventReminderNotification(
+                        $event
+                    )
+                )
+                )
+                    );
             $this->info('Reminders Notification Sent Successfully!'); 
     }
 }

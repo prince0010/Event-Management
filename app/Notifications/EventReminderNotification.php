@@ -8,7 +8,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class EventReminderNotification extends Notification
+class EventReminderNotification extends Notification implements ShouldQueue // the ShouldQueue will tell the Laravel that this notification logic should be run in the background, not during the request
+// Now everytime this is being run, this notification is dispatched.
 {
     use Queueable;
 

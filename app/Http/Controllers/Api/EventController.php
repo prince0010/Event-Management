@@ -21,6 +21,9 @@ class EventController extends Controller
         // You need to be authethicated to add, modify and delete the events.
         // Middleware
         $this->middleware('auth:sanctum')->except(['index', 'show']);
+        $this->middleware('throttle:60,1')->only(['store', 'update', 'destroy']); // This would apply this throttling to every single action, but maybe we should not be so limiting for the actions that just read data because throttling is best used for public facing write heavy actions. 
+        // Basically, this means endpoints that create, update or delete resources. So you should definitely apply throttling for those actions, especially if they are public so they dont require authentication.
+        // Well, its a different case when to create or update something in your API, you need to be authenticated because you know, then you can track malicious users and maybe block them anyway.
         $this->authorizeResource(Event::class, 'event'); // Specifying the resource class which is the Event::class and next is the 2nd parameter of name of the routes, which is event in this case. You can check the routes in php artisan route:list {event}
         //  This make sure that every method from the policy which is the EventPolicy.php -> (viewAny, view, create, update, delete, restore, forceDelete) will be called before a specific action.
     }

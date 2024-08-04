@@ -41,7 +41,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting(): void
     {
-        RateLimiter::for('api', function (Request $request) {
+        RateLimiter::for('api', function (Request $request) { // We can construct more complicated rules here using if statement and etc. to just return the actual limit. Just make sure that you return the limit taht you want to configure from this group. And then that you also apply this group when using the throttle middleware this way in the EventController.php $this->middleware('throttle:api). 
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
     }

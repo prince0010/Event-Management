@@ -15,6 +15,9 @@ class AttendeeController extends Controller
 
     public function __construct(){
         $this->middleware('auth:sanctum')->except(['index', 'show', 'update']);
+        $this->middleware('throttle:60,1')->only(['store', 'destroy']); // This would apply this throttling to every single action, but maybe we should not be so limiting for the actions that just read data because throttling is best used for public facing write heavy actions. 
+        // Basically, this means endpoints that create, update or delete resources. So you should definitely apply throttling for those actions, especially if they are public so they dont require authentication.
+        // Well, its a different case when to create or update something in your API, you need to be authenticated because you know, then you can track malicious users and maybe block them anyway.
         $this->authorizeResource(Attendee::class, 'attendee'); // Attendee is the model class and the attendee is the route and you can check the routes in the models to be added in this parameter in php artisan route:list 
     }
 
@@ -43,7 +46,7 @@ class AttendeeController extends Controller
         $attendee = $this->loadRelationships(
             $event->attendees()->create([
                 // 'user_id' => $request->user()->id
-                'user_id' => 1
+                'user_id' => $request->user()->id
             ])
         );
 
